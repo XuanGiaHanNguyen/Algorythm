@@ -1,11 +1,6 @@
-<!-- Scripts acts just like how the above part of reactJS works where we declare 
- object states and grab data -->
+<script setup>
+  import { ref } from 'vue';
 
-<script>
-  // export default an object 
-  export default{
-
-  }
 </script>
 
 <template>
