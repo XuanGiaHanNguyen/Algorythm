@@ -3,5 +3,7 @@
 </script>
 
 <template>
-  <h1>Helloooooo</h1>
+  <div class="h-[75vh] flex justify-center items-center">
+   
+  </div>
 </template>
