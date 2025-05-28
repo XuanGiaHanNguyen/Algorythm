@@ -3,7 +3,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import Sort from "@/components/Sort.vue";
 import Path from "@/components/Path.vue";
 import BinTree from "@/components/BinTree.vue"
-import Landing from "@/components/Landing.vue";
 import Sudoku from "@/components/Sudoku.vue";
 
 const routes = [
