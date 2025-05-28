@@ -7,11 +7,10 @@ import Landing from "@/components/Landing.vue";
 import Sudoku from "@/components/Sudoku.vue";
 
 const routes = [
-    {path: '/sort', name: 'Sort', component: Sort},
+    {path: '/', name: 'Sort', component: Sort},
     {path: '/sudoku', name: 'Sudoku', component: Sudoku},
     {path: '/path', name: 'Path', component: Path},
     {path: '/bin', name: 'BinTree', component: BinTree},
-    {path: '/', name: 'Landing', component: Landing},
 ];
 
 const router = createRouter({
