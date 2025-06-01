@@ -1,13 +1,14 @@
+
 <template>
   <div class="p-6 px-10 mx-auto" :class="isDarkMode ? 'dark-mode' : 'light-mode'">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">Sorting Algorithm Visualizer</h1>
+      <h1 class="text-2xl text-gray-700 font-bold">Sorting Algorithm Visualizer</h1>
     </div>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
       <div class="space-y-4">
         <div>
-          <label class="block mb-2 font-medium">Input Array (comma separated):</label>
+          <label class="block mb-2 text-gray-600 font-medium">Input Array (comma separated):</label>
           <div class="flex gap-2">
             <input
               type="text"
@@ -18,34 +19,33 @@
             />
             <button
               @click="generateRandomArray"
-              class="bg-secondary text-white px-3 py-2 rounded transition-colors hover:bg-secondary-dark"
+              class="bg-secondary text-white border-gray-300 px-3 py-2 border-2 rounded transition-colors hover:bg-secondary-dark"
               :disabled="isSorting && isPlaying"
               title="Generate Random Array"
             >
-              🔄
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
+              </svg>
             </button>
           </div>
         </div>
         
         <div>
-          <label class="block mb-2 font-medium">Algorithm:</label>
+          <label class="block mb-2 font-medium text-gray-600">Algorithm:</label>
           <select
             v-model="algorithm"
             class="w-full p-2 border rounded transition-colors"
             :class="isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-300'"
             :disabled="isSorting && isPlaying"
           >
-            <option value="bubble">Bubble Sort</option>
             <option value="insertion">Insertion Sort</option>
-            <option value="selection">Selection Sort</option>
             <option value="quick">Quick Sort</option>
             <option value="merge">Merge Sort</option>
-            <option value="heap">Heap Sort</option>
           </select>
         </div>
         
         <div>
-          <label class="block mb-2 font-medium">Array Size:</label>
+          <label class="block mb-2 font-medium text-gray-600">Array Size:</label>
           <div class="flex items-center gap-2">
             <input
               type="range"
@@ -62,38 +62,101 @@
       
       <div class="space-y-4">
         <div class="algorithm-info p-4 rounded transition-colors" :class="isDarkMode ? 'bg-gray-800' : 'bg-gray-100'">
-          <h3 class="font-bold text-lg mb-2">{{ getAlgorithmName }}</h3>
+          <h3 class="font-bold text-lg text-gray-700 mb-2">{{ getAlgorithmName }}</h3>
           <div class="grid grid-cols-2 gap-2 mb-2">
             <div>
-              <p class="text-sm font-medium">Time Complexity:</p>
+              <p class="text-sm font-medium text-gray-700">Time Complexity:</p>
               <p class="text-sm">{{ getAlgorithmInfo.time }}</p>
             </div>
             <div>
-              <p class="text-sm font-medium">Space Complexity:</p>
+              <p class="text-sm font-medium text-gray-700">Space Complexity:</p>
               <p class="text-sm">{{ getAlgorithmInfo.space }}</p>
             </div>
           </div>
           <p class="text-sm mt-2">{{ getAlgorithmInfo.description }}</p>
         </div>
         
-        <div class="flex justify-between items-center">
-          <button
-            @click="startSort"
-            class="bg-primary text-white px-6 py-2 rounded transition-colors hover:bg-primary-dark flex items-center gap-2"
-            :disabled="isSorting && isPlaying"
-          >
-            ▶️ {{ isSorting ? 'Restart Sort' : 'Start Sorting' }}
-          </button>
-          
-          <div class="flex items-center gap-2" v-if="isSorting">
-            <span class="text-sm">Speed:</span>
-            <input
-              type="range"
-              min="50"
-              max="1000"
-              v-model="speedValue"
-              class="w-24"
-            />
+        <!-- Unified Control Panel -->
+        <div class="control-panel p-4 rounded transition-colors" :class="isDarkMode ? 'bg-gray-800' : 'bg-gray-100'">
+          <div class="flex flex-col">
+            <!-- Main Start/Restart Button -->
+            <button
+              @click="startSort"
+              class="bg-primary text-gray-700 py-1 px-4 rounded transition-colors hover:bg-primary-dark flex items-center justify-center gap-2"
+              :disabled="false"
+            >
+              <div class="p-1 rounded">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M8.6 5.2A1 1 0 0 0 7 6v12a1 1 0 0 0 1.6.8l8-6a1 1 0 0 0 0-1.6l-8-6Z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+              {{ isSorting ? 'Restart Sort' : 'Start Sorting' }}
+            </button>
+
+            <!-- Playback Controls (only show when sorting is active) -->
+            <div v-if="isSorting" class="flex justify-center rounded-t bg-white py-2 pt-4 space-x-4">
+              <button
+                @click="stepBack"
+                class="bg-white border-2 border-gray-300 text-white px-3 py-2 rounded transition-colors hover:bg-gray-50 flex items-center"
+                :disabled="stepIndex === 0 || isPlaying"
+                title="Step Back"
+              >
+               <svg class="w-6 h-6 text-gray-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9h13a5 5 0 0 1 0 10H7M3 9l4-4M3 9l4 4"/>
+                </svg>
+              </button>
+              
+              <button
+                @click="togglePlay"
+                :class="[
+                  'bg-white border-2 border-gray-300 hover:bg-gray-50',
+                  'text-gray-600 px-4 py-2 rounded transition-colors flex items-center justify-center'
+                ]"
+                title="Play/Pause"
+              >
+                <svg v-if="isPlaying" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6 4h4v16H6zm8 0h4v16h-4z"/>
+                </svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </button>
+              
+              <button
+                @click="stepForward"
+                class="bg-white border-2 border-gray-300 text-white px-3 py-2 rounded transition-colors hover:bg-gray-50 flex items-center"
+                :disabled="stepIndex >= sortSteps.length - 1 || isPlaying"
+                title="Step Forward"
+              >
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 9H8a5 5 0 0 0 0 10h9m4-10-4-4m4 4-4 4"/>
+                </svg>
+              </button>
+              
+              <button
+                @click="resetSort"
+                class="border-2 border-gray-300 px-3 py-2 rounded transition-colors hover:bg-gray-50 flex items-center"
+                title="Reset"
+              >
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
+                </svg>
+
+              </button>
+            </div>
+            
+            <!-- Speed Control (only show when sorting is active) -->
+            <div v-if="isSorting" class="flex items-center justify-center gap-2 rounded-b pb-2 pt-1 bg-white">
+              <span class="text-sm">Speed:</span>
+              <input
+                type="range"
+                min="50"
+                max="1000"
+                v-model="speedValue"
+                class="w-32"
+              />
+              <span class="text-xs">{{ speedValue }}ms</span>
+            </div>
           </div>
         </div>
       </div>
@@ -120,7 +183,7 @@
       </div>
     </div>
     
-    <div v-if="isSorting" class="controls mb-6 p-4 rounded-lg border transition-colors"
+    <div v-if="isSorting" class="progress-info mb-6 p-4 rounded-lg border transition-colors"
          :class="isDarkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'">
       <div class="flex justify-between mb-4">
         <span>Step: {{ stepIndex }} / {{ sortSteps.length - 1 }}</span>
@@ -136,39 +199,6 @@
       <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4 dark:bg-gray-700">
         <div class="bg-primary h-2.5 rounded-full transition-all" 
              :style="{width: `${(stepIndex / (sortSteps.length - 1)) * 100}%`}"></div>
-      </div>
-      
-      <div class="flex justify-center space-x-4">
-        <button
-          @click="stepBack"
-          class="bg-gray-500 text-white px-4 py-2 rounded transition-colors hover:bg-gray-600 flex items-center"
-          :disabled="stepIndex === 0 || isPlaying"
-        >
-          ⏮️
-        </button>
-        
-        <button
-          @click="togglePlay"
-          :class="[isPlaying ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600', 
-                  'text-white px-4 py-2 rounded transition-colors flex items-center']"
-        >
-          {{ isPlaying ? '⏸️' : '▶️' }}
-        </button>
-        
-        <button
-          @click="stepForward"
-          class="bg-gray-500 text-white px-4 py-2 rounded transition-colors hover:bg-gray-600 flex items-center"
-          :disabled="stepIndex >= sortSteps.length - 1 || isPlaying"
-        >
-          ⏭️
-        </button>
-        
-        <button
-          @click="resetSort"
-          class="bg-red-500 text-white px-4 py-2 rounded transition-colors hover:bg-red-600 flex items-center"
-        >
-          🔄
-        </button>
       </div>
     </div>
     
@@ -202,7 +232,7 @@ export default {
   data() {
     return {
       inputArray: '64,34,25,12,22,11,90',
-      algorithm: 'bubble',
+      algorithm: 'insertion',
       sortSteps: [],
       stepIndex: 0,
       currentArray: [],
@@ -392,6 +422,7 @@ export default {
       this.clearTimer();
       this.stepIndex = 0;
       this.isPlaying = false;
+      this.isSorting = false;
       this.comparingIndices = [];
       this.swappingIndices = [];
       this.pivotIndices = [];
@@ -420,54 +451,7 @@ export default {
       const steps = [];
       const a = [...arr];
       
-      if (algorithm === 'bubble') {
-        // Bubble Sort
-        const n = a.length;
-        const sorted = [];
-        
-        for (let i = 0; i < n; i++) {
-          let swapped = false;
-          
-          for (let j = 0; j < n - i - 1; j++) {
-            steps.push({
-              array: [...a],
-              comparing: [j, j + 1],
-              swapping: [],
-              sorted: [...sorted]
-            });
-            
-            if (a[j] > a[j + 1]) {
-              steps.push({
-                array: [...a],
-                comparing: [],
-                swapping: [j, j + 1],
-                sorted: [...sorted]
-              });
-              
-              [a[j], a[j + 1]] = [a[j + 1], a[j]];
-              swapped = true;
-              
-              steps.push({
-                array: [...a],
-                comparing: [],
-                swapping: [],
-                sorted: [...sorted]
-              });
-            }
-          }
-          
-          sorted.unshift(n - i - 1);
-          
-          steps.push({
-            array: [...a],
-            comparing: [],
-            swapping: [],
-            sorted: [...sorted]
-          });
-          
-          if (!swapped) break;
-        }
-      } else if (algorithm === 'insertion') {
+      if (algorithm === 'insertion') {
         // Insertion Sort
         const n = a.length;
         const sorted = [0];
@@ -512,55 +496,6 @@ export default {
             sorted: [...sorted]
           });
         }
-      } else if (algorithm === 'selection') {
-        // Selection Sort
-        const n = a.length;
-        const sorted = [];
-        
-        for (let i = 0; i < n - 1; i++) {
-          let minIdx = i;
-          
-          for (let j = i + 1; j < n; j++) {
-            steps.push({
-              array: [...a],
-              comparing: [minIdx, j],
-              swapping: [],
-              sorted: [...sorted]
-            });
-            
-            if (a[j] < a[minIdx]) {
-              minIdx = j;
-            }
-          }
-          
-          if (minIdx !== i) {
-            steps.push({
-              array: [...a],
-              comparing: [],
-              swapping: [i, minIdx],
-              sorted: [...sorted]
-            });
-            
-            [a[i], a[minIdx]] = [a[minIdx], a[i]];
-          }
-          
-          sorted.push(i);
-          
-          steps.push({
-            array: [...a],
-            comparing: [],
-            swapping: [],
-            sorted: [...sorted]
-          });
-        }
-        
-        sorted.push(n - 1);
-        steps.push({
-          array: [...a],
-          comparing: [],
-          swapping: [],
-          sorted: [...sorted]
-        });
       } else if (algorithm === 'quick') {
         // Quick Sort
         const sorted = [];
@@ -934,11 +869,11 @@ export default {
 
 <style>
 :root {
-  --color-normal: #14b8a6;
-  --color-comparing: #fbbf24;
-  --color-swapping: #f87171;
-  --color-pivot: #a855f7;
-  --color-sorted: #34d399;
+  --color-normal: #5c6166;
+  --color-comparing: #7b8085;
+  --color-swapping: #7b98b5;
+  --color-pivot: #384047;
+  --color-sorted: #d6d6d6;
 }
 
 .light-mode {
