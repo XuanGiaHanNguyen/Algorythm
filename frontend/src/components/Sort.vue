@@ -1,4 +1,3 @@
-
 <template>
   <div class="p-6 px-10 mx-auto" :class="isDarkMode ? 'dark-mode' : 'light-mode'">
     <div class="flex justify-between items-center mb-6">
@@ -14,16 +13,16 @@
               type="text"
               v-model="inputArray"
               class="w-full p-2 border rounded transition-colors"
-              :class="isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-300'"
+              :class="'bg-white border-gray-300'"
               :disabled="isSorting && isPlaying"
             />
             <button
               @click="generateRandomArray"
-              class="bg-secondary text-white border-gray-300 px-3 py-2 border-2 rounded transition-colors hover:bg-secondary-dark"
+              class="bg-secondary border-gray-300 px-3 py-2 border-2 rounded transition-colors hover:bg-secondary-dark"
               :disabled="isSorting && isPlaying"
               title="Generate Random Array"
             >
-              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
               </svg>
             </button>
@@ -35,7 +34,7 @@
           <select
             v-model="algorithm"
             class="w-full p-2 border rounded transition-colors"
-            :class="isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-300'"
+            :class="'bg-white border-gray-300'"
             :disabled="isSorting && isPlaying"
           >
             <option value="insertion">Insertion Sort</option>
@@ -61,7 +60,7 @@
       </div>
       
       <div class="space-y-4">
-        <div class="algorithm-info p-4 rounded transition-colors" :class="isDarkMode ? 'bg-gray-800' : 'bg-gray-100'">
+        <div class="algorithm-info p-4 rounded transition-colors" :class="'bg-gray-100'">
           <h3 class="font-bold text-lg text-gray-700 mb-2">{{ getAlgorithmName }}</h3>
           <div class="grid grid-cols-2 gap-2 mb-2">
             <div>
@@ -77,7 +76,7 @@
         </div>
         
         <!-- Unified Control Panel -->
-        <div class="control-panel p-4 rounded transition-colors" :class="isDarkMode ? 'bg-gray-800' : 'bg-gray-100'">
+        <div class="control-panel p-4 rounded transition-colors" :class="'bg-gray-100'">
           <div class="flex flex-col">
             <!-- Main Start/Restart Button -->
             <button
@@ -163,7 +162,7 @@
     </div>
     
     <div class="visualization-container mb-6 p-4 rounded-lg border transition-colors" 
-         :class="isDarkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'">
+         :class="'bg-white border-gray-200'">
       <div class="flex items-end justify-center h-64 w-full">
         <div
           v-for="(value, index) in currentArray"
@@ -883,20 +882,6 @@ export default {
   --primary-dark: #0284c7;
   --secondary: #6366f1;
   --secondary-dark: #4f46e5;
-}
-
-.dark-mode {
-  --bg-color: #1f2937;
-  --text-color: #f3f4f6;
-  --primary: #0ea5e9;
-  --primary-dark: #0284c7;
-  --secondary: #6366f1;
-  --secondary-dark: #4f46e5;
-}
-
-.dark-mode {
-  background-color: var(--bg-color);
-  color: var(--text-color);
 }
 
 /* Toggle Switch */
