@@ -1,4 +1,4 @@
-# Algorythm
+# <i class="fa-solid fa-code"></i> Algorythm
 ![Algorythm](https://github.com/user-attachments/assets/2cfe51bb-1bee-4e9e-968e-02b76672c74f)
 An interactive web application for visualizing algorithms to enhance learning and understanding of computer science concepts.
 
